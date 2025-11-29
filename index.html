@@ -22,6 +22,10 @@
             font-weight: 900; 
             font-size: 2.5em; 
             line-height: 1.1;
+            text-shadow: 
+                0 0 20px rgba(147, 51, 234, 0.8),
+                0 0 40px rgba(236, 72, 153, 0.5),
+                0 0 60px rgba(236, 72, 153, 0.3);
         }
         @media (min-width: 480px) { .ml2 { font-size: 3em; } }
         @media (min-width: 640px) { .ml2 { font-size: 3.8em; } }
@@ -31,6 +35,7 @@
         .ml2 .letter { 
             display: inline-block; 
             line-height: 1em;
+            will-change: transform, opacity;
         }
         
         .reveal-element { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
@@ -395,16 +400,41 @@
 
     <!-- SCRIPTS -->
     <script>
-        // 1. ANIME.JS
-        var textWrappers = document.querySelectorAll('.ml2 h1');
-        textWrappers.forEach(function(textWrapper) {
-            textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
+        // 1. ANIME.JS - ULTRA OPTIMIZADO
+        // Usar requestAnimationFrame para mejor rendimiento
+        requestAnimationFrame(function() {
+            var textWrappers = document.querySelectorAll('.ml2 h1');
+            textWrappers.forEach(function(textWrapper) {
+                textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
+            });
+            
+            // Animación más simple y rápida
+            anime.timeline({loop: false})
+            .add({ 
+                targets: '.ml2 h1:first-child .letter', 
+                scale: [2,1], 
+                opacity: [0,1], 
+                easing: "easeOutCubic", 
+                duration: 600, 
+                delay: (el, i) => 40*i 
+            })
+            .add({ 
+                targets: '.ml2 h1:last-child .letter', 
+                scale: [2,1], 
+                opacity: [0,1], 
+                easing: "easeOutCubic", 
+                duration: 600, 
+                delay: (el, i) => 40*i 
+            }, '-=400')
+            .add({ 
+                targets: '.intro-anim', 
+                opacity: [0,1], 
+                translateY: [15, 0], 
+                duration: 500, 
+                delay: anime.stagger(120), 
+                easing: 'easeOutCubic' 
+            }, '-=300');
         });
-        
-        anime.timeline({loop: false})
-        .add({ targets: '.ml2 h1:first-child .letter', scale: [4,1], opacity: [0,1], translateZ: 0, easing: "easeOutExpo", duration: 950, delay: (el, i) => 70*i })
-        .add({ targets: '.ml2 h1:last-child .letter', scale: [4,1], opacity: [0,1], translateZ: 0, easing: "easeOutExpo", duration: 950, delay: (el, i) => 70*i }, '-=600')
-        .add({ targets: '.intro-anim', opacity: [0,1], translateY: [20, 0], duration: 800, delay: anime.stagger(200), easing: 'easeOutQuad' }, '-=600');
 
         // 2. SCROLL REVEAL
         const observer = new IntersectionObserver((entries) => {
@@ -416,22 +446,29 @@
         let particles = [];
         const maxDistance = 120;
         const particleCount = window.innerWidth < 768 ? 60 : 100;
+        let isReady = false;
         
         function setup() {
             let canvas = createCanvas(windowWidth, windowHeight);
             canvas.parent('canvas-container');
-            for(let i=0; i<particleCount; i++) particles.push(new Particle());
+            // Retrasar la creación de partículas para no competir con la animación inicial
+            setTimeout(function() {
+                for(let i=0; i<particleCount; i++) particles.push(new Particle());
+                isReady = true;
+            }, 500);
         }
         
         function draw() {
             clear();
+            
+            if(!isReady) return;
             
             // Dibujar líneas de conexión (rayos brillantes)
             for(let i = 0; i < particles.length; i++) {
                 for(let j = i + 1; j < particles.length; j++) {
                     let d = dist(particles[i].pos.x, particles[i].pos.y, particles[j].pos.x, particles[j].pos.y);
                     if(d < maxDistance) {
-                        let alpha = map(d, 0, maxDistance, 100, 0);
+                        let alpha = map(d, 0, maxDistance, 150, 20);
                         
                         // Mezclar colores según las partículas conectadas
                         let c1 = particles[i].colorType;
@@ -447,10 +484,10 @@
                             stroke(236, 72, 153, alpha); // Rosa
                         } else {
                             // Mezcla de colores
-                            stroke(100, 150, 255, alpha); // Azul claro
+                            stroke(100, 200, 255, alpha); // Azul claro brillante
                         }
                         
-                        strokeWeight(random(0.5, 1.5));
+                        strokeWeight(random(1, 2.5));
                         line(particles[i].pos.x, particles[i].pos.y, particles[j].pos.x, particles[j].pos.y);
                     }
                 }
@@ -473,7 +510,7 @@
                 this.pos = createVector(random(width), random(height)); 
                 this.vel = p5.Vector.random2D().mult(random(0.3, 0.8)); 
                 this.acc = createVector(); 
-                this.r = random(2, 5);
+                this.r = random(3, 7);
                 
                 // Asignar colores variados: azul, amarillo, púrpura, rosa
                 let rand = random();
@@ -524,16 +561,24 @@
             show(){ 
                 noStroke(); 
                 
-                // Halo brillante exterior
-                fill(this.glowColor.levels[0], this.glowColor.levels[1], this.glowColor.levels[2], 50);
-                ellipse(this.pos.x, this.pos.y, this.r*3);
+                // Halo exterior más grande y brillante
+                fill(this.glowColor.levels[0], this.glowColor.levels[1], this.glowColor.levels[2], 80);
+                ellipse(this.pos.x, this.pos.y, this.r*5);
                 
-                // Partícula principal
+                // Segundo halo medio
+                fill(this.glowColor.levels[0], this.glowColor.levels[1], this.glowColor.levels[2], 120);
+                ellipse(this.pos.x, this.pos.y, this.r*3.5);
+                
+                // Partícula principal más grande y brillante
                 fill(this.color);
-                ellipse(this.pos.x, this.pos.y, this.r*2); 
+                ellipse(this.pos.x, this.pos.y, this.r*2.5); 
                 
-                // Brillo central blanco
-                fill(255, 255, 255, 150);
+                // Capa intermedia brillante
+                fill(255, 255, 255, 200);
+                ellipse(this.pos.x, this.pos.y, this.r*1.5);
+                
+                // Núcleo central ultra brillante
+                fill(255, 255, 255, 255);
                 ellipse(this.pos.x, this.pos.y, this.r*0.8); 
             }
         }
