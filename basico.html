@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSU: Violencia de Género</title>
+    <meta name="description"
+        content="Página informativa sobre la violencia de género en la universidad, con recursos y participación.">
+    <meta name="theme-color" content="#6B5CF9" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- P5.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <!-- Anime.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&family=Merriweather:wght@300;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .serif-font {
+            font-family: 'Merriweather', serif;
+        }
+
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .hero-overlay {
+            background: linear-gradient(to bottom, rgba(17, 24, 39, 0.85), rgba(0, 0, 0, 0.5));
+        }
+
+        /* Dark mode styles */
+        .dark .hero-overlay {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        body.dark {
+            background-color: #1a202c;
+            color: #e2e8f0;
+        }
+
+        .glass-form {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ml2 {
+            font-weight: 900;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .ml2 .letter {
+            display: inline-block;
+            line-height: 1em;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .floating-anim {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal-element.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .glass-input {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            /* Purple border */
+            color: white;
+        }
+
+        .glass-input:focus {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: #a855f7;
+            /* Purple-500 */
+            outline: none;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- SECCIÓN 1: HERO & LIVECODING -->
+    <header class="relative h-screen flex items-center justify-center text-white overflow-hidden">
+        <div id="canvas-container"></div>
+        <div class="hero-overlay absolute inset-0"></div>
+
+        <div class="relative z-10 text-center px-4 max-w-5xl mx-auto">
+            <p
+                class="text-purple-400 font-bold tracking-widest uppercase mb-4 text-sm md:text-base opacity-0 intro-anim">
+                Responsabilidad Social Universitaria</p>
+            <h1 class="ml2 mb-6 text-white uppercase">Violencia de Género</h1>
+            <button id="dark-mode-toggle"
+                class="mt-4 px-4 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition">
+                Modo Oscuro
+            </button>
+            <p class="text-xl md:text-2xl font-light mb-8 text-gray-200 opacity-0 intro-anim max-w-2xl mx-auto">
+                Desmantelando las estructuras invisibles de desigualdad en la universidad.
+                <br><span class="text-sm text-purple-300 mt-4 block font-mono floating-anim">Move mouse to
+                    interact_</span>
+            </p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center opacity-0 intro-anim floating-anim">
+                <a href="#ensayo"
+                    class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-full transition duration-300 transform hover:scale-105 shadow-lg shadow-purple-500/30">Leer
+                    Ensayo</a>
+                <a href="#participa"
+                    class="bg-transparent border-2 border-white hover:bg-white hover:text-gray-900 text-white font-bold py-3 px-8 rounded-full transition duration-300">Participar</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- SECCIÓN 2: CONTEXTO -->
+    <section class="py-16 px-4 bg-white">
+        <div class="max-w-4xl mx-auto text-center reveal-element">
+            <h2 class="text-3xl font-bold text-gray-900 mb-6">Manifestaciones en la U</h2>
+            <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                La violencia de género no siempre es física. Identificamos tres ejes críticos en nuestra investigación
+                local:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                <div class="p-6 bg-gray-100 rounded-lg hover:shadow-md transition reveal-element delay-100">
+                    <h3 class="text-xl font-bold text-purple-600 mb-2">Acoso Sexual</h3>
+                    <p class="text-sm text-gray-500">Comentarios e insinuaciones no deseadas en entornos académicos.</p>
+                </div>
+                <div class="p-6 bg-gray-100 rounded-lg hover:shadow-md transition reveal-element delay-200">
+                    <h3 class="text-xl font-bold text-purple-800 mb-2">Violencia Simbólica</h3>
+                    <p class="text-sm text-gray-500">Desvalorización intelectual y estereotipos de carrera.</p>
+                </div>
+                <div class="p-6 bg-gray-100 rounded-lg hover:shadow-md transition reveal-element delay-300">
+                    <h3 class="text-xl font-bold text-pink-600 mb-2">Ciberacoso</h3>
+                    <p class="text-sm text-gray-500">Difusión de contenido íntimo o acoso en redes universitarias.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN 3: RECURSOS -->
+    <section id="recursos" class="py-16 px-4 bg-gray-100">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12 reveal-element">
+                <h2 class="text-3xl font-bold text-gray-900">Material de Acción</h2>
+                <p class="text-gray-600 mt-2">Descarga nuestros recursos informativos.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div
+                    class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 transform hover:-translate-y-1 reveal-element">
+                    <div class="h-40 bg-purple-200 flex items-center justify-center text-4xl">📊</div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl mb-2">Estadísticas</h3>
+                        <p class="text-gray-600 text-sm mb-4">Cifras reales de Arequipa 2024.</p>
+                        <button class="text-purple-600 font-bold text-sm hover:underline">DESCARGAR PDF</button>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div
+                    class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 transform hover:-translate-y-1 reveal-element delay-100">
+                    <div class="h-40 bg-pink-200 flex items-center justify-center text-4xl">🛑</div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl mb-2">Protocolo</h3>
+                        <p class="text-gray-600 text-sm mb-4">¿Qué hacer si eres testigo?</p>
+                        <button class="text-pink-600 font-bold text-sm hover:underline">DESCARGAR GUÍA</button>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div
+                    class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 transform hover:-translate-y-1 reveal-element delay-200">
+                    <div class="h-40 bg-indigo-200 flex items-center justify-center text-4xl">📞</div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl mb-2">Directorio</h3>
+                        <p class="text-gray-600 text-sm mb-4">Números de emergencia y CEM.</p>
+                        <button class="text-indigo-600 font-bold text-sm hover:underline">VER NÚMEROS</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN 4: ENSAYO -->
+    <section id="ensayo" class="py-16 px-4 bg-white">
+        <div class="max-w-3xl mx-auto reveal-element">
+            <div class="border-l-4 border-purple-500 pl-6 mb-8">
+                <h2 class="text-3xl font-bold text-gray-900">Ensayo Académico</h2>
+                <p class="text-gray-500 italic">"Deconstruyendo el silencio"</p>
+            </div>
+            <article class="serif-font prose prose-lg text-gray-700 leading-loose">
+                <p class="mb-4"><strong class="bg-purple-100 text-purple-800 px-1">[Tesis]</strong> La violencia de
+                    género persiste...</p>
+                <p class="mb-4">Desarrollo del ensayo aquí...</p>
+                <div class="p-4 bg-gray-50 border rounded text-sm text-gray-500 mt-6">Ensayo en proceso de redacción
+                    final.</div>
+            </article>
+        </div>
+    </section>
+
+    <!-- SECCIÓN 5: PARTICIPACIÓN (CUSTOM FORM CON FORMSPREE) -->
+    <section id="participa" class="py-20 px-4 bg-gray-900 text-white relative overflow-hidden">
+        <!-- Decoración de fondo -->
+        <div class="absolute top-0 right-0 w-64 h-64 bg-purple-600 rounded-full filter blur-[100px] opacity-20"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-pink-600 rounded-full filter blur-[100px] opacity-20"></div>
+
+        <div class="max-w-2xl mx-auto relative z-10 reveal-element">
+            <div class="text-center mb-10">
+                <h2 class="text-4xl font-bold mb-4">Tu voz es el cambio</h2>
+                <p class="text-gray-300">Cuéntanos tu experiencia o propuesta para mejorar la seguridad en el campus. Es
+                    100% anónimo.</p>
+            </div>
+
+            <!-- FORMULARIO PERSONALIZADO (Glassmorphism) -->
+            <form id="contact-form" action="https://formspree.io/f/mjkdzead" method="POST"
+                class="glass-form p-8 rounded-2xl shadow-2xl">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block text-purple-300 text-sm font-bold mb-2">Tu rol en la universidad</label>
+                        <select name="rol"
+                            class="glass-input w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-purple-500 transition appearance-none">
+                            <option class="text-gray-900" value="Estudiante">Estudiante</option>
+                            <option class="text-gray-900" value="Docente">Docente</option>
+                            <option class="text-gray-900" value="Administrativo">Administrativo</option>
+                            <option class="text-gray-900" value="Otro">Otro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-purple-300 text-sm font-bold mb-2">Seudónimo</label>
+                        <input type="text" name="seudonimo" id="seudonimo"
+                            class="glass-input w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-purple-500 transition"
+                            placeholder="Ejemplo: LunaEstelar" />
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-purple-300 text-sm font-bold mb-2">Tu Propuesta / Testimonio</label>
+                    <textarea name="mensaje" required
+                        class="glass-input w-full px-4 py-3 rounded-lg h-32 focus:ring-2 focus:ring-purple-500 transition"
+                        placeholder="Escribe aquí..."></textarea>
+                </div>
+
+                <button type="submit" id="submit-btn"
+                    class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-4 px-6 rounded-lg shadow-lg transform transition hover:-translate-y-1 hover:shadow-purple-500/50">
+                    Enviar de forma anónima
+                </button>
+
+                <p id="form-status" class="text-center mt-4 text-sm hidden"></p>
+            </form>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-black text-gray-500 py-8 text-center border-t border-gray-800">
+        <p class="font-bold text-gray-300">Literatura Regional, Nacional y Universal -RSU 2025B - Violencia de Género
+        </p>
+        <div class="mt-4 text-xs flex flex-wrap justify-center gap-4">
+            <span>Gutierrez Chata Daniela Aracely</span> • <span>Hancco Condori Lady</span> • <span>Huanaco Munoz, Jose
+                Gabriel</span> •
+            <span>Mamani Gutierrez Adolfo Cesar</span> • <span>Pari Molina Heyson Servet</span> • <span>Ruth Margot
+                Colla Suyo</span>
+        </div>
+    </footer>
+
+    <script>
+        // 1. ANIME.JS (TEXTO)
+        var textWrapper = document.querySelector('.ml2');
+        textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
+        anime.timeline({ loop: false })
+            .add({
+                targets: '.ml2 .letter', scale: [4, 1], opacity: [0, 1], translateZ: 0, easing: "easeOutExpo", duration: 950, delay: (el, i) => 70 * i
+            }).add({
+                targets: '.intro-anim', opacity: [0, 1], translateY: [20, 0], duration: 800, delay: anime.stagger(200), easing: 'easeOutQuad'
+            }, '-=600');
+
+        // 2. SCROLL REVEAL
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); } });
+        });
+        document.querySelectorAll('.reveal-element').forEach((el) => observer.observe(el));
+
+        // 3. P5.JS (PARTÍCULAS Y RAYOS SURREALISTAS)
+        let particles = [];
+        let lightnings = [];
+
+        function setup() {
+            let canvas = createCanvas(windowWidth, windowHeight);
+            canvas.parent('canvas-container');
+            for (let i = 0; i < 80; i++) particles.push(new Particle());
+        }
+
+        function draw() {
+            clear();
+
+            // Particles
+            stroke(255, 30);
+            strokeWeight(0.5);
+            particles.forEach(p => { p.update(); p.show(); p.behaviors(); });
+
+            // Surreal Lightning Logic
+            if (random(1) < 0.015) { // 1.5% chance per frame
+                lightnings.push(new Lightning());
+            }
+
+            for (let i = lightnings.length - 1; i >= 0; i--) {
+                lightnings[i].update();
+                lightnings[i].show();
+                if (lightnings[i].isDead()) {
+                    lightnings.splice(i, 1);
+                }
+            }
+        }
+
+        function windowResized() { resizeCanvas(windowWidth, windowHeight); }
+
+        class Particle {
+            constructor() {
+                this.pos = createVector(random(width), random(height));
+                this.vel = p5.Vector.random2D().mult(0.5);
+                this.acc = createVector();
+                this.r = 3;
+            }
+            behaviors() {
+                let mouse = createVector(mouseX, mouseY);
+                if (dist(this.pos.x, this.pos.y, mouse.x, mouse.y) < 150) {
+                    let attract = p5.Vector.sub(mouse, this.pos);
+                    attract.setMag(0.5);
+                    this.acc.add(attract);
+                }
+            }
+            update() {
+                this.vel.add(this.acc); this.pos.add(this.vel); this.acc.mult(0); this.vel.limit(2);
+                if (this.pos.x < 0 || this.pos.x > width) this.vel.x *= -1;
+                if (this.pos.y < 0 || this.pos.y > height) this.vel.y *= -1;
+            }
+            show() {
+                noStroke();
+                fill(random() > 0.5 ? color(147, 51, 234) : color(236, 72, 153));
+                ellipse(this.pos.x, this.pos.y, this.r * 2);
+            }
+        }
+
+        class Lightning {
+            constructor() {
+                this.segments = [];
+                this.life = 255;
+                // Start from random top position or near mouse if active
+                let startX = random(width);
+                let startY = random(-50, height / 3);
+                this.generate(startX, startY);
+            }
+
+            generate(x, y) {
+                let currX = x;
+                let currY = y;
+                while (currY < height + 50) {
+                    // Erratic movement
+                    let nextX = currX + random(-40, 40);
+                    let nextY = currY + random(20, 60);
+                    this.segments.push({ x1: currX, y1: currY, x2: nextX, y2: nextY });
+                    currX = nextX;
+                    currY = nextY;
+                }
+            }
+
+            update() {
+                this.life -= 15; // Fade out quickly
+            }
+
+            show() {
+                // Surreal colors: Electric Purple / Neon Pink / Cyan
+                let colors = [
+                    color(168, 85, 247), // Purple
+                    color(236, 72, 153), // Pink
+                    color(34, 211, 238)  // Cyan
+                ];
+                let c = random(colors);
+                c.setAlpha(this.life);
+
+                strokeWeight(2);
+                stroke(c);
+                noFill();
+
+                beginShape();
+                for (let s of this.segments) {
+                    line(s.x1, s.y1, s.x2, s.y2);
+                }
+                endShape();
+
+                // Glow effect
+                strokeWeight(6);
+                c.setAlpha(this.life * 0.2);
+                stroke(c);
+                for (let s of this.segments) {
+                    line(s.x1, s.y1, s.x2, s.y2);
+                }
+            }
+
+            isDead() {
+                return this.life <= 0;
+            }
+        }
+
+        // 4. MANEJO DEL FORMULARIO (AJAX para no recargar la página)
+        var form = document.getElementById("contact-form");
+        async function handleSubmit(event) {
+            event.preventDefault();
+            var status = document.getElementById("form-status");
+            var btn = document.getElementById("submit-btn");
+            var data = new FormData(event.target);
+
+            btn.disabled = true;
+            btn.innerHTML = "Enviando...";
+
+            fetch(event.target.action, {
+                method: form.method,
+                body: data,
+                headers: { 'Accept': 'application/json' }
+            }).then(response => {
+                if (response.ok) {
+                    status.innerHTML = "¡Gracias! Tu opinión ha sido registrada.";
+                    status.classList.remove('hidden', 'text-red-500');
+                    status.classList.add('text-green-400', 'font-bold');
+                    form.reset();
+                    btn.innerHTML = "Enviado ✔";
+                } else {
+                    status.innerHTML = "Hubo un error al enviar. Intenta de nuevo.";
+                    status.classList.remove('hidden');
+                    status.classList.add('text-red-500');
+                    btn.disabled = false;
+                }
+            }).catch(error => {
+                status.innerHTML = "Error de conexión.";
+                status.classList.remove('hidden');
+                status.classList.add('text-red-500');
+                btn.disabled = false;
+            });
+        }
+        form.addEventListener("submit", handleSubmit);
+    </script>
+    <script>
+        // Dark mode toggle
+        const toggle = document.getElementById('dark-mode-toggle');
+        const htmlEl = document.documentElement;
+        // Initialize based on prefers-color-scheme
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            htmlEl.classList.add('dark');
+            toggle.textContent = 'Modo Claro';
+        }
+        toggle.addEventListener('click', () => {
+            htmlEl.classList.toggle('dark');
+            toggle.textContent = htmlEl.classList.contains('dark') ? 'Modo Claro' : 'Modo Oscuro';
+        });
+
+        // Pseudónimo random generator
+        const pseudonyms = ['LunaEstelar', 'EcoSolar', 'VientoSilente', 'MariposaAzul', 'RayoDorado', 'FenixRenacido', 'SombraLunar', 'EstrellaFugaz'];
+        const pseudoInput = document.getElementById('seudonimo');
+        if (pseudoInput) {
+            pseudoInput.value = pseudonyms[Math.floor(Math.random() * pseudonyms.length)];
+        }
+    </script>
+</body>
+
+</html>
