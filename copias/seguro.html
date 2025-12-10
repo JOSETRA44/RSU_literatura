@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSU: Violencia de Género - UNSA</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- P5.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <!-- Anime.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&family=Merriweather:wght@300;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Montserrat', sans-serif; scroll-behavior: smooth; }
+        .serif-font { font-family: 'Merriweather', serif; }
+        #canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; overflow: hidden; }
+        .hero-overlay { background: linear-gradient(135deg, rgba(17, 24, 39, 0.92) 0%, rgba(88, 28, 135, 0.85) 100%); }
+        .ml2 { 
+            font-weight: 900; 
+            font-size: 2.5em; 
+            line-height: 1.1;
+            text-shadow: 
+                0 0 20px rgba(147, 51, 234, 0.8),
+                0 0 40px rgba(236, 72, 153, 0.5),
+                0 0 60px rgba(236, 72, 153, 0.3);
+        }
+        @media (min-width: 480px) { .ml2 { font-size: 3em; } }
+        @media (min-width: 640px) { .ml2 { font-size: 3.8em; } }
+        @media (min-width: 768px) { .ml2 { font-size: 4.5em; } }
+        @media (min-width: 1024px) { .ml2 { font-size: 5.5em; } }
+        @media (min-width: 1280px) { .ml2 { font-size: 6em; } }
+        .ml2 .letter { 
+            display: inline-block; 
+            line-height: 1em;
+            will-change: transform, opacity;
+        }
+        
+        .reveal-element { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+        .reveal-element.visible { opacity: 1; transform: translateY(0); }
+
+        /* Estilo Glassmorphism */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-input {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: white;
+        }
+        .glass-input:focus {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: #a855f7;
+            outline: none;
+        }
+
+        /* Animación para el modal */
+        #mediaModal.open {
+            display: flex;
+        }
+        
+        .icon-download {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        /* Animación tipo burbuja para botones del hero */
+        @keyframes bubble {
+            0%, 100% { transform: translateY(0) scale(1); }
+            25% { transform: translateY(-8px) scale(1.02); }
+            50% { transform: translateY(-4px) scale(1.01); }
+            75% { transform: translateY(-6px) scale(1.015); }
+        }
+        
+        .bubble-btn {
+            animation: bubble 3s ease-in-out infinite;
+        }
+        
+        .bubble-btn:nth-child(1) { animation-delay: 0s; }
+        .bubble-btn:nth-child(2) { animation-delay: 0.5s; }
+        .bubble-btn:nth-child(3) { animation-delay: 1s; }
+        
+        .bubble-btn:hover {
+            animation-play-state: paused;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- SECCIÓN 1: HERO & LIVECODING -->
+    <header class="relative min-h-screen flex items-center justify-center text-white overflow-hidden">
+        <div id="canvas-container"></div>
+        <div class="hero-overlay absolute inset-0"></div>
+
+        <div class="relative z-10 text-center px-4 py-20 max-w-6xl mx-auto w-full">
+            <p class="text-purple-300 font-bold tracking-widest uppercase mb-4 text-xs sm:text-sm md:text-base opacity-0 intro-anim">Responsabilidad Social Universitaria</p>
+            <div class="ml2 mb-6 text-white uppercase px-4 max-w-5xl mx-auto">
+                <h1 class="block">Violencia de</h1>
+                <h1 class="block">Género</h1>
+            </div>
+            <p class="text-base sm:text-lg md:text-xl lg:text-2xl font-light mb-8 text-gray-200 opacity-0 intro-anim max-w-3xl mx-auto px-4">
+                Desmantelando las estructuras invisibles de desigualdad en la universidad.
+                <br><span class="text-xs sm:text-sm text-purple-300 mt-4 block font-mono">Mueve el cursor para interactuar_</span>
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center opacity-0 intro-anim px-4">
+                <a href="#recursos" class="bubble-btn bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-3 px-6 sm:px-8 rounded-full transition duration-300 transform hover:scale-110 shadow-lg shadow-purple-500/40">
+                    <span class="flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        Ver Recursos
+                    </span>
+                </a>
+                <a href="#participa" class="bubble-btn bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 sm:px-8 rounded-full transition duration-300 transform hover:scale-110 shadow-lg shadow-purple-500/30">Participar</a>
+                <a href="#muro" class="bubble-btn bg-transparent border-2 border-white hover:bg-white hover:text-gray-900 text-white font-bold py-3 px-6 sm:px-8 rounded-full transition duration-300 transform hover:scale-110">Ver Muro</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- SECCIÓN 2: CONTEXTO -->
+    <section class="py-16 sm:py-20 px-4 bg-gradient-to-b from-white to-gray-50">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12 reveal-element">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">Manifestaciones en la Universidad</h2>
+                <p class="text-base sm:text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto">
+                    La violencia de género no siempre es física. Identificamos tres ejes críticos en nuestra investigación local:
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+                <!-- Card 1 -->
+                <div class="group bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 reveal-element border-t-4 border-purple-600">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-3">Acoso Sexual</h3>
+                    <p class="text-gray-600 leading-relaxed">Comentarios e insinuaciones no deseadas en entornos académicos.</p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="group bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 reveal-element delay-100 border-t-4 border-purple-800">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-8 h-8 text-purple-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-3">Violencia Simbólica</h3>
+                    <p class="text-gray-600 leading-relaxed">Desvalorización intelectual y estereotipos de carrera.</p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="group bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 reveal-element delay-200 border-t-4 border-pink-600">
+                    <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-8 h-8 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-3">Ciberacoso</h3>
+                    <p class="text-gray-600 leading-relaxed">Difusión de contenido íntimo o acoso en redes universitarias.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN 3: RECURSOS (INFOGRAFÍAS REALES) -->
+    <section id="recursos" class="py-12 sm:py-16 px-4 bg-gray-100"></section>
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-8 sm:mb-12 reveal-element">
+                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">Material Educativo</h2>
+                <p class="text-sm sm:text-base text-gray-600 mt-2 px-4">Haz clic para visualizar nuestras infografías y recursos educativos.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+                
+                <!-- Card 1: Info 1 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 transform hover:-translate-y-1 reveal-element">
+                    <div class="h-48 sm:h-56 bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center cursor-pointer overflow-hidden" onclick="openMediaModal('img/info1.png')">
+                        <img src="img/info1.png" alt="Infografía 1" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-lg sm:text-xl mb-2">Conceptos y Datos</h3>
+                        <p class="text-gray-600 text-sm mb-4">Definiciones clave, tipos de violencia y estadísticas actuales de Arequipa.</p>
+                        <div class="flex items-center justify-center gap-4">
+                            <button type="button" onclick="openMediaModal('img/info1.png')" class="text-purple-600 hover:text-purple-700 transition p-2 hover:bg-purple-50 rounded-full" title="Ver">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                            </button>
+                            <a href="img/info1.png" download="Conceptos-y-Datos.png" class="text-purple-600 hover:text-purple-700 transition p-2 hover:bg-purple-50 rounded-full" title="Descargar">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                </svg>
+                            </a>
+                            <button type="button" onclick="shareImage('img/info1.png', 'Conceptos y Datos')" class="text-purple-600 hover:text-purple-700 transition p-2 hover:bg-purple-50 rounded-full" title="Compartir">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Info 2 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 transform hover:-translate-y-1 reveal-element delay-100">
+                    <div class="h-48 sm:h-56 bg-gradient-to-br from-pink-400 to-pink-600 flex items-center justify-center cursor-pointer overflow-hidden" onclick="openMediaModal('img/info2.png')">
+                        <img src="img/info2.png" alt="Infografía 2" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-lg sm:text-xl mb-2">Causas y Consecuencias</h3>
+                        <p class="text-gray-600 text-sm mb-4">Análisis de las raíces estructurales del problema y su impacto social.</p>
+                        <div class="flex items-center justify-center gap-4">
+                            <button type="button" onclick="openMediaModal('img/info2.png')" class="text-pink-600 hover:text-pink-700 transition p-2 hover:bg-pink-50 rounded-full" title="Ver">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                            </button>
+                            <a href="img/info2.png" download="Causas-y-Consecuencias.png" class="text-pink-600 hover:text-pink-700 transition p-2 hover:bg-pink-50 rounded-full" title="Descargar">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                </svg>
+                            </a>
+                            <button type="button" onclick="shareImage('img/info2.png', 'Causas y Consecuencias')" class="text-pink-600 hover:text-pink-700 transition p-2 hover:bg-pink-50 rounded-full" title="Compartir">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Info 3 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 transform hover:-translate-y-1 reveal-element delay-200">
+                    <div class="h-48 sm:h-56 bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center cursor-pointer overflow-hidden" onclick="openMediaModal('img/info3.png')">
+                        <img src="img/info3.png" alt="Infografía 3" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-lg sm:text-xl mb-2">Rutas de Ayuda</h3>
+                        <p class="text-gray-600 text-sm mb-4">Estrategias de prevención, protocolos de atención y directorio telefónico.</p>
+                        <div class="flex items-center justify-center gap-4">
+                            <button type="button" onclick="openMediaModal('img/info3.png')" class="text-indigo-600 hover:text-indigo-700 transition p-2 hover:bg-indigo-50 rounded-full" title="Ver">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                            </button>
+                            <a href="img/info3.png" download="Rutas-de-Ayuda.jpg" class="text-indigo-600 hover:text-indigo-700 transition p-2 hover:bg-indigo-50 rounded-full" title="Descargar">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                </svg>
+                            </a>
+                            <button type="button" onclick="shareImage('img/info3.png', 'Rutas de Ayuda')" class="text-indigo-600 hover:text-indigo-700 transition p-2 hover:bg-indigo-50 rounded-full" title="Compartir">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Ensayo -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 transform hover:-translate-y-1 reveal-element delay-300">
+                    <div class="h-48 sm:h-56 bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center cursor-pointer overflow-hidden" onclick="openMediaModal('img/ensayo.pdf')">
+                        <svg class="w-24 h-24 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-lg sm:text-xl mb-2">Ensayo Académico</h3>
+                        <p class="text-gray-600 text-sm mb-4">"Deconstruyendo el silencio" - Análisis profundo sobre violencia de género en la universidad.</p>
+                        <div class="flex items-center justify-center gap-4">
+                            <button type="button" onclick="openMediaModal('img/ensayo.pdf')" class="text-teal-600 hover:text-teal-700 transition p-2 hover:bg-teal-50 rounded-full" title="Ver">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                            </button>
+                            <a href="img/ensayo.pdf" download="Ensayo-Academico.pdf" class="text-teal-600 hover:text-teal-700 transition p-2 hover:bg-teal-50 rounded-full" title="Descargar">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                </svg>
+                            </a>
+                            <button type="button" onclick="shareImage('img/ensayo.pdf', 'Ensayo Académico')" class="text-teal-600 hover:text-teal-700 transition p-2 hover:bg-teal-50 rounded-full" title="Compartir">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN 5: FORMULARIO PRIVADO (FORMSPREE) -->
+    <section id="participa" class="py-12 sm:py-16 lg:py-20 px-4 bg-gray-900 text-white relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-purple-600 rounded-full filter blur-[100px] opacity-20"></div>
+        <div class="max-w-2xl mx-auto relative z-10 reveal-element">
+            <div class="text-center mb-8 sm:mb-10">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">Tu voz es el cambio</h2>
+                <p class="text-base sm:text-lg text-gray-300 px-4">Cuéntanos tu experiencia o propuesta para mejorar la seguridad en el campus. Es 100% anónimo.</p>
+            </div>
+            <form id="contact-form" action="https://formspree.io/f/mjkdzead" method="POST" class="glass-panel p-6 sm:p-8 rounded-2xl shadow-2xl">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label for="rol-select" class="block text-purple-300 text-sm font-bold mb-2">Tu rol en la universidad</label>
+                        <select id="rol-select" name="rol" title="Selecciona tu rol" class="glass-input w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-purple-500 transition appearance-none">
+                            <option class="text-gray-900" value="Estudiante">Estudiante</option>
+                            <option class="text-gray-900" value="Docente">Docente</option>
+                            <option class="text-gray-900" value="Administrativo">Administrativo</option>
+                            <option class="text-gray-900" value="Otro">Otro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="seudonimo-input" class="block text-purple-300 text-sm font-bold mb-2">Seudónimo</label>
+                        <div class="relative">
+                            <input type="text" id="seudonimo-input" name="seudonimo" class="glass-input w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-purple-500 transition pr-10" value="" placeholder="Editable">
+                            <button type="button" onclick="generatePseudonym()" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-purple-400 hover:text-purple-300 transition" title="Generar nuevo seudónimo">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label for="mensaje-textarea" class="block text-purple-300 text-sm font-bold mb-2">Tu Propuesta / Testimonio</label>
+                    <textarea id="mensaje-textarea" name="mensaje" required class="glass-input w-full px-4 py-3 rounded-lg h-32 focus:ring-2 focus:ring-purple-500 transition resize-none" placeholder="Escribe aquí..."></textarea>
+                </div>
+                <button type="submit" id="submit-btn" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-4 px-6 rounded-lg shadow-lg transform transition hover:-translate-y-1 hover:shadow-purple-500/50">
+                    Enviar de forma anónima
+                </button>
+                <p id="form-status" class="text-center mt-4 text-sm hidden"></p>
+            </form>
+        </div>
+    </section>
+
+    <!-- SECCIÓN 6: MURO DE PADLET -->
+    <section id="muro" class="py-12 sm:py-16 lg:py-20 px-4 bg-gray-950 text-white relative border-t border-gray-800">
+        <div class="max-w-6xl mx-auto relative z-10 reveal-element">
+            <div class="text-center mb-8 sm:mb-10">
+                <span class="text-pink-400 font-bold tracking-widest text-xs sm:text-sm uppercase">Acción Colectiva</span>
+                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 mt-2">Muro de Voces</h2>
+                <p class="text-sm sm:text-base text-gray-300 px-4">Un espacio público para compartir mensajes de apoyo y visibilizar la causa.</p>
+            </div>
+            <div class="glass-panel p-2 rounded-xl shadow-2xl h-[500px] sm:h-[600px] lg:h-[700px] w-full relative overflow-hidden">
+                <iframe 
+                    src="https://padlet.com/embed/umkmk0pvtg4abiqj" 
+                    title="Muro de Voces - Padlet"
+                    frameborder="0" 
+                    allow="camera;microphone;geolocation;display-capture;clipboard-write" 
+                    class="w-full h-full border-none block bg-transparent">
+                </iframe>
+                <div class="absolute bottom-2 right-4 pointer-events-none opacity-40">
+                   <span class="text-[10px] text-white">Powered by Padlet</span>
+                </div>
+            </div>
+            <p class="text-center text-xs text-gray-600 mt-4">Este muro es moderado públicamente.</p>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-black text-gray-500 py-6 text-center border-t border-gray-900 px-4">
+        <div class="max-w-6xl mx-auto">
+            <!-- Título y Universidad -->
+            <div class="mb-4">
+                <p class="font-bold text-gray-300 text-sm sm:text-base">RSU 2025 - Violencia de Género</p>
+                <p class="text-xs text-gray-600 mt-1">Universidad Nacional de San Agustín de Arequipa</p>
+            </div>
+            
+            <!-- Desarrollador - Más prominente -->
+            <div class="mb-4">
+                <a href="https://github.com/JOSETRA44" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-gray-400 hover:text-purple-400 transition-colors duration-300">
+                    <span class="text-xs text-gray-500">Desarrollado por</span>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/>
+                    </svg>
+                    <span class="font-mono text-sm font-semibold">JOSETRA44</span>
+                </a>
+            </div>
+            
+            <!-- Integrantes - Más compacto -->
+            <div class="text-xs text-gray-600 flex flex-wrap justify-center gap-2 px-4">
+                <span>Colla Suyo Margot</span> • 
+                <span>Gutierrez Chata Daniela Aracely</span> • 
+                <span>Hancco Condori Lady Ruth</span> • 
+                <span>Huanaco Munoz Jose Gabriel</span> • 
+                <span>Mamani Gutierrez Adolfo Cesar</span> • 
+                <span>Pari Molina Heyson Servet</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL INTELIGENTE (IMAGEN O PDF) -->
+    <div id="mediaModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-95 backdrop-blur-sm p-4 transition-opacity duration-300" onclick="closeMediaModal()">
+        
+        <button type="button" class="absolute top-4 right-4 text-white text-5xl hover:text-purple-400 transition z-50" onclick="closeMediaModal()" aria-label="Cerrar modal">&times;</button>
+        
+        <div class="relative w-full h-full max-w-5xl max-h-[90vh] flex items-center justify-center" onclick="event.stopPropagation()">
+            <!-- Contenedor para Imagen -->
+            <img id="modalImg" src="" alt="Recurso educativo" class="hidden max-w-full max-h-full rounded-lg shadow-2xl object-contain">
+            
+            <!-- Contenedor para PDF -->
+            <iframe id="modalPdf" src="" title="Documento PDF" class="hidden w-full h-full rounded-lg shadow-2xl border bg-white"></iframe>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // 1. ANIME.JS - ULTRA OPTIMIZADO
+        // Usar requestAnimationFrame para mejor rendimiento
+        requestAnimationFrame(function() {
+            var textWrappers = document.querySelectorAll('.ml2 h1');
+            textWrappers.forEach(function(textWrapper) {
+                textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
+            });
+            
+            // Animación más simple y rápida
+            anime.timeline({loop: false})
+            .add({ 
+                targets: '.ml2 h1:first-child .letter', 
+                scale: [2,1], 
+                opacity: [0,1], 
+                easing: "easeOutCubic", 
+                duration: 600, 
+                delay: (el, i) => 40*i 
+            })
+            .add({ 
+                targets: '.ml2 h1:last-child .letter', 
+                scale: [2,1], 
+                opacity: [0,1], 
+                easing: "easeOutCubic", 
+                duration: 600, 
+                delay: (el, i) => 40*i 
+            }, '-=400')
+            .add({ 
+                targets: '.intro-anim', 
+                opacity: [0,1], 
+                translateY: [15, 0], 
+                duration: 500, 
+                delay: anime.stagger(120), 
+                easing: 'easeOutCubic' 
+            }, '-=300');
+        });
+
+        // 2. SCROLL REVEAL
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if(entry.isIntersecting){ entry.target.classList.add('visible'); } });
+        });
+        document.querySelectorAll('.reveal-element').forEach((el) => observer.observe(el));
+
+        // 3. P5.JS - RAYOS BRILLANTES AZULES Y AMARILLOS
+        let particles = [];
+        const maxDistance = 120;
+        const particleCount = window.innerWidth < 768 ? 60 : 100;
+        let isReady = false;
+        
+        function setup() {
+            let canvas = createCanvas(windowWidth, windowHeight);
+            canvas.parent('canvas-container');
+            // Retrasar la creación de partículas para no competir con la animación inicial
+            setTimeout(function() {
+                for(let i=0; i<particleCount; i++) particles.push(new Particle());
+                isReady = true;
+            }, 500);
+        }
+        
+        function draw() {
+            clear();
+            
+            if(!isReady) return;
+            
+            // Dibujar líneas de conexión (rayos brillantes)
+            for(let i = 0; i < particles.length; i++) {
+                for(let j = i + 1; j < particles.length; j++) {
+                    let d = dist(particles[i].pos.x, particles[i].pos.y, particles[j].pos.x, particles[j].pos.y);
+                    if(d < maxDistance) {
+                        let alpha = map(d, 0, maxDistance, 150, 20);
+                        
+                        // Mezclar colores según las partículas conectadas
+                        let c1 = particles[i].colorType;
+                        let c2 = particles[j].colorType;
+                        
+                        if(c1 === 'blue' && c2 === 'blue') {
+                            stroke(59, 130, 246, alpha); // Azul brillante
+                        } else if(c1 === 'yellow' && c2 === 'yellow') {
+                            stroke(250, 204, 21, alpha); // Amarillo brillante
+                        } else if(c1 === 'purple' && c2 === 'purple') {
+                            stroke(147, 51, 234, alpha); // Púrpura
+                        } else if(c1 === 'pink' && c2 === 'pink') {
+                            stroke(236, 72, 153, alpha); // Rosa
+                        } else {
+                            // Mezcla de colores
+                            stroke(100, 200, 255, alpha); // Azul claro brillante
+                        }
+                        
+                        strokeWeight(random(1, 2.5));
+                        line(particles[i].pos.x, particles[i].pos.y, particles[j].pos.x, particles[j].pos.y);
+                    }
+                }
+            }
+            
+            // Actualizar y mostrar partículas
+            particles.forEach(p => { 
+                p.update(); 
+                p.show(); 
+                p.behaviors(); 
+            });
+        }
+        
+        function windowResized(){ 
+            resizeCanvas(windowWidth, windowHeight); 
+        }
+
+        class Particle {
+            constructor(){ 
+                this.pos = createVector(random(width), random(height)); 
+                this.vel = p5.Vector.random2D().mult(random(0.3, 0.8)); 
+                this.acc = createVector(); 
+                this.r = random(3, 7);
+                
+                // Asignar colores variados: azul, amarillo, púrpura, rosa
+                let rand = random();
+                if(rand < 0.25) {
+                    this.colorType = 'blue';
+                    this.color = color(59, 130, 246); // Azul brillante
+                    this.glowColor = color(147, 197, 253); // Azul claro
+                } else if(rand < 0.5) {
+                    this.colorType = 'yellow';
+                    this.color = color(250, 204, 21); // Amarillo brillante
+                    this.glowColor = color(254, 240, 138); // Amarillo claro
+                } else if(rand < 0.75) {
+                    this.colorType = 'purple';
+                    this.color = color(147, 51, 234); // Púrpura
+                    this.glowColor = color(196, 181, 253); // Púrpura claro
+                } else {
+                    this.colorType = 'pink';
+                    this.color = color(236, 72, 153); // Rosa
+                    this.glowColor = color(251, 207, 232); // Rosa claro
+                }
+            }
+            
+            behaviors(){ 
+                let mouse = createVector(mouseX, mouseY); 
+                let d = dist(this.pos.x, this.pos.y, mouse.x, mouse.y);
+                if(d < 200){ 
+                    let attract = p5.Vector.sub(mouse, this.pos); 
+                    attract.setMag(map(d, 0, 200, 1.5, 0.1)); 
+                    this.acc.add(attract); 
+                } 
+            }
+            
+            update(){ 
+                this.vel.add(this.acc); 
+                this.pos.add(this.vel); 
+                this.acc.mult(0); 
+                this.vel.limit(2.5); 
+                
+                // Rebote en los bordes
+                if(this.pos.x < 0 || this.pos.x > width) this.vel.x *= -1; 
+                if(this.pos.y < 0 || this.pos.y > height) this.vel.y *= -1;
+                
+                // Mantener dentro de los límites
+                this.pos.x = constrain(this.pos.x, 0, width);
+                this.pos.y = constrain(this.pos.y, 0, height);
+            }
+            
+            show(){ 
+                noStroke(); 
+                
+                // Halo exterior más grande y brillante
+                fill(this.glowColor.levels[0], this.glowColor.levels[1], this.glowColor.levels[2], 80);
+                ellipse(this.pos.x, this.pos.y, this.r*5);
+                
+                // Segundo halo medio
+                fill(this.glowColor.levels[0], this.glowColor.levels[1], this.glowColor.levels[2], 120);
+                ellipse(this.pos.x, this.pos.y, this.r*3.5);
+                
+                // Partícula principal más grande y brillante
+                fill(this.color);
+                ellipse(this.pos.x, this.pos.y, this.r*2.5); 
+                
+                // Capa intermedia brillante
+                fill(255, 255, 255, 200);
+                ellipse(this.pos.x, this.pos.y, this.r*1.5);
+                
+                // Núcleo central ultra brillante
+                fill(255, 255, 255, 255);
+                ellipse(this.pos.x, this.pos.y, this.r*0.8); 
+            }
+        }
+
+        // 4. FORMSPREE
+        var form = document.getElementById("contact-form");
+        async function handleSubmit(event) {
+            event.preventDefault();
+            var status = document.getElementById("form-status");
+            var btn = document.getElementById("submit-btn");
+            var data = new FormData(event.target);
+            btn.disabled = true; btn.innerHTML = "Enviando...";
+            fetch(event.target.action, { method: form.method, body: data, headers: { 'Accept': 'application/json' } }).then(response => {
+                if (response.ok) { status.innerHTML = "¡Gracias! Tu testimonio ha sido guardado."; status.classList.remove('hidden', 'text-red-500'); status.classList.add('text-green-400', 'font-bold'); form.reset(); btn.innerHTML = "Enviado ✔"; } 
+                else { status.innerHTML = "Hubo un error."; status.classList.remove('hidden'); status.classList.add('text-red-500'); btn.disabled = false; btn.innerHTML = "Intentar de nuevo"; }
+            }).catch(error => { status.innerHTML = "Error de conexión."; status.classList.remove('hidden'); status.classList.add('text-red-500'); btn.disabled = false; btn.innerHTML = "Intentar de nuevo"; });
+        }
+        form.addEventListener("submit", handleSubmit);
+
+        // 5. MODAL INTELIGENTE (DETECTA PDF O IMAGEN)
+        function openMediaModal(fileUrl) {
+            const modal = document.getElementById('mediaModal');
+            const imgElement = document.getElementById('modalImg');
+            const pdfElement = document.getElementById('modalPdf');
+            
+            // Detectar si es PDF
+            if (fileUrl.toLowerCase().endsWith('.pdf')) {
+                imgElement.classList.add('hidden');
+                pdfElement.classList.remove('hidden');
+                pdfElement.src = fileUrl;
+            } else {
+                // Asumimos que es Imagen
+                pdfElement.classList.add('hidden');
+                imgElement.classList.remove('hidden');
+                imgElement.src = fileUrl;
+            }
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('open');
+        }
+
+        function closeMediaModal() {
+            const modal = document.getElementById('mediaModal');
+            const imgElement = document.getElementById('modalImg');
+            const pdfElement = document.getElementById('modalPdf');
+            
+            modal.classList.remove('open');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                imgElement.src = '';
+                pdfElement.src = '';
+            }, 300);
+        }
+        
+        document.addEventListener('keydown', function(event) { if (event.key === "Escape") closeMediaModal(); });
+
+        // 6. FUNCIÓN DE COMPARTIR
+        async function shareImage(imageUrl, title) {
+            const fullUrl = window.location.origin + '/' + imageUrl;
+            
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: title + ' - Violencia de Género',
+                        text: 'Infografía sobre violencia de género en la universidad',
+                        url: fullUrl
+                    });
+                } catch (error) {
+                    if (error.name !== 'AbortError') {
+                        fallbackShare(fullUrl);
+                    }
+                }
+            } else {
+                fallbackShare(fullUrl);
+            }
+        }
+
+        function fallbackShare(url) {
+            // Copiar al portapapeles
+            navigator.clipboard.writeText(url).then(() => {
+                alert('¡Enlace copiado al portapapeles! Puedes compartirlo ahora.');
+            }).catch(() => {
+                // Si falla, mostrar el enlace
+                prompt('Copia este enlace para compartir:', url);
+            });
+        }
+
+        // 7. GENERADOR DE SEUDÓNIMOS
+        const adjetivos = ['Valiente', 'Fuerte', 'Libre', 'Audaz', 'Resiliente', 'Firme', 'Decidido', 'Intrépido', 'Sereno', 'Brillante'];
+        const sustantivos = ['Viento', 'Luz', 'Estrella', 'Fénix', 'Águila', 'Montaña', 'Océano', 'Rayo', 'Luna', 'Sol'];
+        
+        function generatePseudonym() {
+            const adj = adjetivos[Math.floor(Math.random() * adjetivos.length)];
+            const sust = sustantivos[Math.floor(Math.random() * sustantivos.length)];
+            const num = Math.floor(Math.random() * 100);
+            const pseudonym = adj + sust + num;
+            document.getElementById('seudonimo-input').value = pseudonym;
+        }
+        
+        // Generar seudónimo al cargar la página
+        window.addEventListener('DOMContentLoaded', function() {
+            generatePseudonym();
+        });
+    </script>
+</body>
+</html>
