@@ -5,11 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RSU: Violencia de Género - UNSA</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet">
+    
+    <!-- Three.js Import Map -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.166.1/examples/jsm/"
+        }
+    }
+    </script>
     
     <style>
         /* Variables CSS para tema oscuro espacial */
@@ -179,7 +187,7 @@
             );
         }
         
-        /* Canvas container */
+        /* Canvas container para Three.js */
         #canvas-container {
             position: absolute;
             top: 0;
@@ -188,6 +196,27 @@
             height: 100%;
             z-index: 0;
             overflow: hidden;
+        }
+        
+        #canvas-container canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .glow-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(circle at 50% 50%,
+                rgba(120, 50, 255, 0.05) 0%,
+                rgba(80, 40, 200, 0.03) 40%,
+                transparent 70%);
+            mix-blend-mode: screen;
+            z-index: 1;
         }
         
         /* Modal mejorado */
@@ -239,9 +268,10 @@
 </head>
 <body class="bg-gray-950 text-gray-100">
 
-    <!-- SECCIÓN 1: HERO CON LIVECODING ESPACIAL -->
-    <header class="relative min-h-screen flex items-center justify-center text-white overflow-hidden star-bg">
+    <!-- SECCIÓN 1: HERO CON FONDO 3D INTERACTIVO -->
+    <header class="relative min-h-screen flex items-center justify-center text-white overflow-hidden">
         <div id="canvas-container"></div>
+        <div class="glow-overlay"></div>
         <div class="hero-overlay absolute inset-0"></div>
 
         <div class="relative z-10 text-center px-4 py-20 max-w-6xl mx-auto w-full">
@@ -448,31 +478,24 @@
 
                 <!-- Card 5: Video YouTube -->
                 <div class="glass-panel rounded-2xl overflow-hidden shadow-2xl hover:shadow-orange-500/50 transition-all duration-500 transform hover:-translate-y-2 reveal-element delay-400">
-                    <div class="h-64 bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center cursor-pointer overflow-hidden group" onclick="openVideoModal('https://www.youtube.com/embed/sJobBnubhNk')">
+                    <a href="https://youtube.com/shorts/sJobBnubhNk" target="_blank" rel="noopener noreferrer" class="block h-64 bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center cursor-pointer overflow-hidden group">
                         <svg class="w-32 h-32 text-white opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"></path>
                         </svg>
-                    </div>
+                    </a>
                     <div class="p-6">
                         <h3 class="font-bold text-xl mb-3 text-white">Video Educativo</h3>
                         <p class="text-gray-400 text-sm mb-4">Video corto sobre violencia de género y prevención.</p>
-                        <div class="flex items-center justify-center gap-4">
-                            <button type="button" onclick="openVideoModal('https://www.youtube.com/embed/sJobBnubhNk')" class="text-orange-400 hover:text-orange-300 transition p-2 hover:bg-orange-900/30 rounded-full" title="Ver Video">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        <div class="flex items-center justify-center">
+                            <a href="https://youtube.com/shorts/sJobBnubhNk" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-orange-500/50">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"></path>
                                 </svg>
-                            </button>
-                            <a href="https://youtube.com/shorts/sJobBnubhNk" target="_blank" rel="noopener noreferrer" class="text-orange-400 hover:text-orange-300 transition p-2 hover:bg-orange-900/30 rounded-full" title="Ver en YouTube">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <span>Ver en YouTube</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                                 </svg>
                             </a>
-                            <button type="button" onclick="shareVideo('https://youtube.com/shorts/sJobBnubhNk', 'Video Educativo')" class="text-orange-400 hover:text-orange-300 transition p-2 hover:bg-orange-900/30 rounded-full" title="Compartir">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
-                                </svg>
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -592,11 +615,283 @@
         <div class="relative w-full h-full max-w-6xl max-h-[90vh] flex items-center justify-center" onclick="event.stopPropagation()">
             <img id="modalImg" src="" alt="Recurso educativo" class="hidden max-w-full max-h-full rounded-2xl shadow-2xl object-contain">
             <iframe id="modalPdf" src="" title="Documento PDF" class="hidden w-full h-full rounded-2xl shadow-2xl border-2 border-purple-500/30 bg-white"></iframe>
-            <iframe id="modalVideo" src="" title="YouTube video player" frameborder="0" class="hidden w-full aspect-video max-w-5xl rounded-2xl shadow-2xl border-2 border-orange-500/30" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
     </div>
 
     <!-- SCRIPTS MEJORADOS -->
+    <script type="module">
+        // ========================================
+        // 0. THREE.JS - FONDO 3D INTERACTIVO
+        // ========================================
+        import * as THREE from 'three';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+        let scene, camera, renderer, composer;
+        let particleLayers = [];
+        let time = 0;
+        const mouse = new THREE.Vector3(0, 0, 0);
+        const targetMouse = new THREE.Vector3(0, 0, 0);
+        const mouseRadius = 40;
+        let ripples = [];
+        let isThreeActive = true;
+
+        const layersConfig = [
+            {
+                count: 15000,
+                size: 0.3,
+                colorRange: { hue: [0.75, 0.9], sat: [0.7, 1], light: [0.5, 0.7] },
+                rotationSpeed: 0.001
+            },
+            {
+                count: 20000,
+                size: 0.2,
+                colorRange: { hue: [0.45, 0.6], sat: [0.6, 0.8], light: [0.4, 0.6] },
+                rotationSpeed: 0.0005
+            }
+        ];
+
+        function createParticleSystem(config) {
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(config.count * 3);
+            const colors = new Float32Array(config.count * 3);
+            const basePositions = new Float32Array(config.count * 3);
+            const baseColors = new Float32Array(config.count * 3);
+
+            for (let i = 0; i < config.count; i++) {
+                const i3 = i * 3;
+                const radius = 25 + Math.random() * 30;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.acos(2 * Math.random() - 1);
+
+                const x = radius * Math.sin(phi) * Math.cos(theta);
+                const y = radius * Math.sin(phi) * Math.sin(theta);
+                const z = radius * Math.cos(phi);
+
+                positions[i3] = basePositions[i3] = x;
+                positions[i3 + 1] = basePositions[i3 + 1] = y;
+                positions[i3 + 2] = basePositions[i3 + 2] = z;
+
+                const dist = Math.sqrt(x * x + y * y + z * z) / 55;
+                const hue = THREE.MathUtils.lerp(config.colorRange.hue[0], config.colorRange.hue[1], dist);
+                const sat = THREE.MathUtils.lerp(config.colorRange.sat[0], config.colorRange.sat[1], dist);
+                const light = THREE.MathUtils.lerp(config.colorRange.light[0], config.colorRange.light[1], dist);
+
+                const color = new THREE.Color().setHSL(hue, sat, light);
+                colors[i3] = baseColors[i3] = color.r;
+                colors[i3 + 1] = baseColors[i3 + 1] = color.g;
+                colors[i3 + 2] = baseColors[i3 + 2] = color.b;
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const material = new THREE.PointsMaterial({
+                size: config.size,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                sizeAttenuation: true
+            });
+
+            const points = new THREE.Points(geometry, material);
+            points.userData = {
+                velocities: new Float32Array(config.count * 3),
+                basePositions,
+                baseColors,
+                colorVelocities: new Float32Array(config.count * 3),
+                rotationSpeed: config.rotationSpeed
+            };
+
+            return points;
+        }
+
+        function createRipple(x, y) {
+            ripples.push({
+                x, y, radius: 0, strength: 2.5,
+                maxRadius: mouseRadius * 4, speed: 4,
+                color: new THREE.Color(0xffffff)
+            });
+        }
+
+        function initThree() {
+            const container = document.getElementById('canvas-container');
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x020108, 0.008);
+
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 100;
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x020108, 0);
+            container.appendChild(renderer.domElement);
+
+            const renderScene = new RenderPass(scene, camera);
+            const bloomPass = new UnrealBloomPass(
+                new THREE.Vector2(window.innerWidth, window.innerHeight),
+                1.5, 0.4, 0.85
+            );
+            bloomPass.threshold = 0;
+            bloomPass.strength = 1.2;
+            bloomPass.radius = 0.5;
+
+            composer = new EffectComposer(renderer);
+            composer.addPass(renderScene);
+            composer.addPass(bloomPass);
+
+            layersConfig.forEach(config => {
+                const particles = createParticleSystem(config);
+                particleLayers.push(particles);
+                scene.add(particles);
+            });
+
+            document.addEventListener('mousemove', onThreeMouseMove);
+            document.addEventListener('click', onThreeClick);
+            window.addEventListener('resize', onThreeResize);
+            
+            // Pausar cuando sale del hero
+            setupThreeScrollPause();
+        }
+
+        function updateParticles() {
+            if (!isThreeActive) return;
+            
+            mouse.lerp(targetMouse, 0.05);
+            ripples = ripples.filter(r => {
+                r.radius += r.speed;
+                r.strength *= 0.96;
+                return r.radius < r.maxRadius;
+            });
+
+            particleLayers.forEach(layer => {
+                const positions = layer.geometry.attributes.position.array;
+                const colors = layer.geometry.attributes.color.array;
+                const { velocities, basePositions, baseColors, colorVelocities } = layer.userData;
+
+                for (let i = 0; i < positions.length / 3; i++) {
+                    const i3 = i * 3;
+                    const px = positions[i3], py = positions[i3 + 1], pz = positions[i3 + 2];
+
+                    let totalForce = new THREE.Vector3();
+                    let colorShift = new THREE.Vector3();
+
+                    const mouseDist = mouse.distanceTo(new THREE.Vector3(px, py, pz));
+                    if (mouseDist < mouseRadius) {
+                        const strength = (1 - mouseDist / mouseRadius) * 0.1;
+                        totalForce.add(new THREE.Vector3(px, py, pz).sub(mouse).normalize().multiplyScalar(strength));
+                        const intensity = (1 - mouseDist / mouseRadius) * 0.8;
+                        colorShift.set(intensity, intensity, intensity);
+                    }
+
+                    ripples.forEach(r => {
+                        const dist = Math.sqrt((r.x - px) ** 2 + (r.y - py) ** 2);
+                        const width = 15;
+                        if (Math.abs(dist - r.radius) < width) {
+                            const falloff = 1 - Math.abs(dist - r.radius) / width;
+                            totalForce.add(new THREE.Vector3(px, py, pz).sub(new THREE.Vector3(r.x, r.y, pz)).normalize().multiplyScalar(r.strength * falloff * 0.1));
+                            colorShift.add(new THREE.Vector3(r.color.r, r.color.g, r.color.b).multiplyScalar(falloff * r.strength));
+                        }
+                    });
+
+                    velocities[i3] += totalForce.x + (basePositions[i3] - px) * 0.02;
+                    velocities[i3 + 1] += totalForce.y + (basePositions[i3 + 1] - py) * 0.02;
+                    velocities[i3 + 2] += totalForce.z + (basePositions[i3 + 2] - pz) * 0.02;
+
+                    velocities[i3] *= 0.94;
+                    velocities[i3 + 1] *= 0.94;
+                    velocities[i3 + 2] *= 0.94;
+
+                    positions[i3] += velocities[i3];
+                    positions[i3 + 1] += velocities[i3 + 1];
+                    positions[i3 + 2] += velocities[i3 + 2];
+
+                    colorVelocities[i3] += colorShift.x + (baseColors[i3] - colors[i3]) * 0.05;
+                    colorVelocities[i3 + 1] += colorShift.y + (baseColors[i3 + 1] - colors[i3 + 1]) * 0.05;
+                    colorVelocities[i3 + 2] += colorShift.z + (baseColors[i3 + 2] - colors[i3 + 2]) * 0.05;
+
+                    colorVelocities[i3] *= 0.9;
+                    colorVelocities[i3 + 1] *= 0.9;
+                    colorVelocities[i3 + 2] *= 0.9;
+
+                    colors[i3] += colorVelocities[i3];
+                    colors[i3 + 1] += colorVelocities[i3 + 1];
+                    colors[i3 + 2] += colorVelocities[i3 + 2];
+                }
+
+                layer.geometry.attributes.position.needsUpdate = true;
+                layer.geometry.attributes.color.needsUpdate = true;
+            });
+        }
+
+        function animateThree() {
+            requestAnimationFrame(animateThree);
+            if (!isThreeActive) return;
+            
+            time += 0.01;
+            updateParticles();
+
+            particleLayers.forEach(layer => {
+                layer.rotation.y += layer.userData.rotationSpeed;
+                layer.rotation.x = Math.sin(time * 0.1) * 0.05;
+            });
+
+            camera.position.x = Math.sin(time * 0.2) * 2;
+            camera.position.y = Math.cos(time * 0.3) * 2;
+            camera.lookAt(scene.position);
+
+            composer.render();
+        }
+
+        function onThreeMouseMove(event) {
+            targetMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            targetMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            const vector = new THREE.Vector3(targetMouse.x, targetMouse.y, 0.5);
+            vector.unproject(camera);
+            const dir = vector.sub(camera.position).normalize();
+            const distance = -camera.position.z / dir.z;
+            targetMouse.copy(camera.position.clone().add(dir.multiplyScalar(distance)));
+        }
+
+        function onThreeClick(event) {
+            const clickMouse = new THREE.Vector2(
+                (event.clientX / window.innerWidth) * 2 - 1,
+                -(event.clientY / window.innerHeight) * 2 + 1
+            );
+            const vector = new THREE.Vector3(clickMouse.x, clickMouse.y, 0.5);
+            vector.unproject(camera);
+            const dir = vector.sub(camera.position).normalize();
+            const distance = -camera.position.z / dir.z;
+            const pos = camera.position.clone().add(dir.multiplyScalar(distance));
+            createRipple(pos.x, pos.y);
+        }
+
+        function onThreeResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function setupThreeScrollPause() {
+            const heroSection = document.querySelector('header');
+            window.addEventListener('scroll', () => {
+                if (heroSection) {
+                    const rect = heroSection.getBoundingClientRect();
+                    isThreeActive = rect.bottom > 0 && rect.top < window.innerHeight;
+                }
+            }, { passive: true });
+        }
+
+        // Iniciar Three.js
+        initThree();
+        animateThree();
+    </script>
+    
     <script>
         // ========================================
         // 1. ANIME.JS - ANIMACIÓN DE TÍTULO OPTIMIZADA
@@ -677,227 +972,6 @@
         document.querySelectorAll('.reveal-element').forEach((el) => observer.observe(el));
 
         // ========================================
-        // 3. P5.JS - SISTEMA CON MEMORY LEAK DEFINITIVAMENTE ARREGLADO
-        // ========================================
-        let particles = [];
-        const maxDistance = 100;
-        const particleCount = window.innerWidth < 768 ? 35 : 55;
-        let gridCells = {}; // Objeto reutilizable
-        const cellSize = maxDistance;
-        let mouseInCanvas = false;
-        let frameCounter = 0;
-        let isP5Active = true;
-        let heroSection = null;
-        
-        function setup() {
-            let canvas = createCanvas(windowWidth, windowHeight);
-            canvas.parent('canvas-container');
-            pixelDensity(1);
-            frameRate(45);
-            
-            // Pre-crear arrays del grid para evitar recreación
-            for(let x = -2; x < ceil(windowWidth/cellSize) + 2; x++) {
-                for(let y = -2; y < ceil(windowHeight/cellSize) + 2; y++) {
-                    gridCells[x + '_' + y] = [];
-                }
-            }
-            
-            setTimeout(() => {
-                for(let i = 0; i < particleCount; i++) {
-                    particles.push(new Particle());
-                }
-            }, 1800);
-            
-            // Detectar cuando el usuario sale del hero
-            heroSection = document.querySelector('header');
-            setupScrollPause();
-        }
-        
-        function draw() {
-            if(!isP5Active || particles.length === 0) {
-                clear();
-                return;
-            }
-            
-            clear();
-            frameCounter++;
-            
-            // Limpiar arrays del grid (reutilizar, no recrear)
-            for(let key in gridCells) {
-                gridCells[key].length = 0; // Vaciar array sin recrear
-            }
-            
-            // Insertar en grid
-            for(let i = 0; i < particles.length; i++) {
-                let p = particles[i];
-                let cellX = floor(p.pos.x / cellSize);
-                let cellY = floor(p.pos.y / cellSize);
-                let key = cellX + '_' + cellY;
-                
-                if(gridCells[key]) {
-                    gridCells[key].push(i);
-                }
-            }
-            
-            // Actualizar y dibujar
-            for(let i = 0; i < particles.length; i++) {
-                let p = particles[i];
-                p.update();
-                if(mouseInCanvas) p.behaviors();
-                p.show();
-                
-                // Solo dibujar conexiones cada 3 frames
-                if(frameCounter % 3 === 0) {
-                    let cellX = floor(p.pos.x / cellSize);
-                    let cellY = floor(p.pos.y / cellSize);
-                    
-                    // Solo revisar 4 celdas
-                    for(let dx = 0; dx <= 1; dx++) {
-                        for(let dy = 0; dy <= 1; dy++) {
-                            let key = (cellX + dx) + '_' + (cellY + dy);
-                            let neighborIndices = gridCells[key];
-                            
-                            if(neighborIndices) {
-                                for(let j of neighborIndices) {
-                                    if(i < j) {
-                                        let other = particles[j];
-                                        let dx = p.pos.x - other.pos.x;
-                                        let dy = p.pos.y - other.pos.y;
-                                        let distSq = dx*dx + dy*dy;
-                                        
-                                        if(distSq < 10000) {
-                                            let alpha = 100 - (distSq * 0.009);
-                                            stroke(p.color.levels[0], p.color.levels[1], p.color.levels[2], alpha);
-                                            strokeWeight(1);
-                                            line(p.pos.x, p.pos.y, other.pos.x, other.pos.y);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-        // Pausar P5.js cuando el usuario sale del hero
-        function setupScrollPause() {
-            let scrollTimeout;
-            window.addEventListener('scroll', () => {
-                clearTimeout(scrollTimeout);
-                
-                if(heroSection) {
-                    let rect = heroSection.getBoundingClientRect();
-                    let isVisible = rect.bottom > 0 && rect.top < window.innerHeight;
-                    
-                    if(!isVisible && isP5Active) {
-                        isP5Active = false;
-                        console.log('P5.js pausado - fuera del hero');
-                    } else if(isVisible && !isP5Active) {
-                        isP5Active = true;
-                        console.log('P5.js reactivado');
-                    }
-                }
-            }, { passive: true });
-        }
-        
-        function mouseMoved() {
-            mouseInCanvas = mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height;
-            return false;
-        }
-        
-        function windowResized() { 
-            resizeCanvas(windowWidth, windowHeight);
-            
-            // Recrear grid solo al redimensionar
-            gridCells = {};
-            for(let x = -2; x < ceil(windowWidth/cellSize) + 2; x++) {
-                for(let y = -2; y < ceil(windowHeight/cellSize) + 2; y++) {
-                    gridCells[x + '_' + y] = [];
-                }
-            }
-        }
-
-        // ========================================
-        // CLASE PARTICLE - OPTIMIZADA CON OBJECT POOLING
-        // ========================================
-        class Particle {
-            constructor() { 
-                this.pos = createVector(random(width), random(height)); 
-                this.vel = p5.Vector.random2D().mult(random(0.5, 1.2)); 
-                this.acc = createVector(); 
-                this.r = random(5, 7);
-                
-                // Pre-calcular colores para evitar recrearlos
-                let rand = random();
-                if(rand < 0.25) {
-                    this.color = color(59, 130, 246);
-                    this.glowColor = color(147, 197, 253, 50);
-                } else if(rand < 0.5) {
-                    this.color = color(250, 204, 21);
-                    this.glowColor = color(254, 240, 138, 50);
-                } else if(rand < 0.75) {
-                    this.color = color(147, 51, 234);
-                    this.glowColor = color(196, 181, 253, 50);
-                } else {
-                    this.color = color(236, 72, 153);
-                    this.glowColor = color(251, 207, 232, 50);
-                }
-            }
-            
-            behaviors() { 
-                // Usar distancia al cuadrado para evitar sqrt
-                let dx = mouseX - this.pos.x;
-                let dy = mouseY - this.pos.y;
-                let distSq = dx*dx + dy*dy;
-                let threshold = 150*150;
-                
-                if(distSq < threshold) { 
-                    let force = map(distSq, 0, threshold, 1.5, 0.1);
-                    let angle = atan2(dy, dx);
-                    this.acc.x += cos(angle) * force;
-                    this.acc.y += sin(angle) * force;
-                }
-            }
-            
-            update() { 
-                // Actualización vectorial optimizada
-                this.vel.x += this.acc.x;
-                this.vel.y += this.acc.y;
-                this.pos.x += this.vel.x;
-                this.pos.y += this.vel.y;
-                
-                this.acc.x = 0;
-                this.acc.y = 0;
-                
-                // Limitar velocidad manualmente (más rápido que .limit())
-                let speedSq = this.vel.x*this.vel.x + this.vel.y*this.vel.y;
-                if(speedSq > 9) { // 3*3
-                    let speed = sqrt(speedSq);
-                    this.vel.x = (this.vel.x / speed) * 3;
-                    this.vel.y = (this.vel.y / speed) * 3;
-                }
-                
-                // Rebote en bordes
-                if(this.pos.x < 0) { this.pos.x = 0; this.vel.x *= -0.7; }
-                if(this.pos.x > width) { this.pos.x = width; this.vel.x *= -0.7; }
-                if(this.pos.y < 0) { this.pos.y = 0; this.vel.y *= -0.7; }
-                if(this.pos.y > height) { this.pos.y = height; this.vel.y *= -0.7; }
-            }
-            
-            show() { 
-                noStroke();
-                
-                // Dibujar solo 2 círculos (halo + núcleo)
-                fill(this.glowColor);
-                ellipse(this.pos.x, this.pos.y, this.r * 3);
-                
-                fill(this.color);
-                ellipse(this.pos.x, this.pos.y, this.r); 
-            }
-        }
-
-        // ========================================
         // 4. FORMSPREE - MANEJO DE FORMULARIO
         // ========================================
         const form = document.getElementById("contact-form");
@@ -972,7 +1046,6 @@
             const modal = document.getElementById('mediaModal');
             const imgElement = document.getElementById('modalImg');
             const pdfElement = document.getElementById('modalPdf');
-            const videoElement = document.getElementById('modalVideo');
             
             modal.classList.remove('open');
             document.body.style.overflow = 'auto';
@@ -981,24 +1054,7 @@
                 modal.classList.add('hidden');
                 imgElement.src = '';
                 pdfElement.src = '';
-                videoElement.src = '';
             }, 300);
-        }
-        
-        function openVideoModal(videoUrl) {
-            const modal = document.getElementById('mediaModal');
-            const imgElement = document.getElementById('modalImg');
-            const pdfElement = document.getElementById('modalPdf');
-            const videoElement = document.getElementById('modalVideo');
-            
-            imgElement.classList.add('hidden');
-            pdfElement.classList.add('hidden');
-            videoElement.classList.remove('hidden');
-            videoElement.src = videoUrl;
-            
-            modal.classList.remove('hidden');
-            modal.classList.add('open');
-            document.body.style.overflow = 'hidden';
         }
         
         document.addEventListener('keydown', function(event) { 
@@ -1036,24 +1092,6 @@
             });
         }
 
-        async function shareVideo(videoUrl, title) {
-            if (navigator.share) {
-                try {
-                    await navigator.share({
-                        title: title + ' - Violencia de Género',
-                        text: 'Video educativo sobre violencia de género',
-                        url: videoUrl
-                    });
-                } catch (error) {
-                    if (error.name !== 'AbortError') {
-                        fallbackShare(videoUrl);
-                    }
-                }
-            } else {
-                fallbackShare(videoUrl);
-            }
-        }
-        
         function showNotification(message) {
             const notification = document.createElement('div');
             notification.className = 'fixed bottom-4 right-4 bg-purple-600 text-white px-6 py-3 rounded-lg shadow-2xl z-50 animate-bounce';
