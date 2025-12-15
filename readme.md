@@ -151,11 +151,11 @@ Construir registros que:
 | Nombre | Rol |
 |--------|-----|
 | **Colla Suyo Margot** | Investigación y Contenido |
-| **Gutierrez Chata Daniela Aracely** | Diseño UX/UI |
-| **Hancco Condori Lady Ruth** | Análisis de Datos |
-| **Huanaco Munoz Jose Gabriel** | Desarrollo Frontend |
-| **Mamani Gutierrez Adolfo Cesar** | Documentación |
-| **Pari Molina Heyson Servet** | Testing y QA |
+| **Gutierrez Chata Daniela Aracely** | diseño de infografias |
+| **Hancco Condori Lady Ruth** | Creacion de video |
+| **Huanaco Munoz Jose Gabriel** | Diseño UX/UI, Desarrollo Frontend, backend |
+| **Mamani Gutierrez Adolfo Cesar** | Documentación, difusion de contenido |
+| **Pari Molina Heyson Servet** | Genaracion de contenido, infografias |
 
 <br>
 
