@@ -504,26 +504,26 @@
     </section>
 
     <!-- SECCIÓN 4: FORMULARIO PRIVADO CON AGUJERO NEGRO -->
-    <section id="participa" class="py-20 px-4 text-white relative overflow-hidden" style="background: radial-gradient(ellipse at center, #0a0a1a 0%, #000002 70%);">
+    <section id="participa" class="py-16 px-4 text-white relative overflow-hidden" style="background: radial-gradient(ellipse at center, #0a0a1a 0%, #000002 70%);">
         <!-- Canvas del Agujero Negro -->
         <div id="blackhole-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;"></div>
         
         <!-- Overlay oscuro para mejorar legibilidad -->
         <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.2); z-index: 1; pointer-events: none;"></div>
         
-        <div class="max-w-2xl mx-auto relative reveal-element" style="z-index: 10; position: relative;"></div>
-            <div class="text-center mb-12">
-                <h2 class="text-4xl md:text-5xl font-bold mb-6 neon-text">Tu voz es el cambio</h2>
-                <p class="text-lg md:text-xl text-gray-300 px-4">
+        <div class="max-w-2xl mx-auto relative reveal-element" style="z-index: 10; position: relative;">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 neon-text">Tu voz es el cambio</h2>
+                <p class="text-base md:text-lg text-gray-300 px-4">
                     Cuéntanos tu experiencia o propuesta para mejorar la seguridad en el campus. Es 100% anónimo.
                 </p>
             </div>
             
-            <form id="contact-form" action="https://formspree.io/f/mjkdzead" method="POST" class="glass-panel p-8 md:p-10 rounded-3xl shadow-2xl">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+            <form id="contact-form" action="https://formspree.io/f/mjkdzead" method="POST" class="glass-panel p-6 md:p-8 rounded-2xl shadow-2xl">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label for="rol-select" class="block text-purple-300 text-sm font-bold mb-3">Tu rol en la universidad</label>
-                        <select id="rol-select" name="rol" class="glass-input w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-purple-500 transition">
+                        <label for="rol-select" class="block text-purple-300 text-xs font-semibold mb-2">Tu rol</label>
+                        <select id="rol-select" name="rol" class="glass-input w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-purple-500 transition text-sm">
                             <option class="text-gray-900" value="Estudiante">Estudiante</option>
                             <option class="text-gray-900" value="Docente">Docente</option>
                             <option class="text-gray-900" value="Administrativo">Administrativo</option>
@@ -531,25 +531,25 @@
                         </select>
                     </div>
                     <div>
-                        <label for="seudonimo-input" class="block text-purple-300 text-sm font-bold mb-3">Seudónimo</label>
+                        <label for="seudonimo-input" class="block text-purple-300 text-xs font-semibold mb-2">Seudónimo</label>
                         <div class="relative">
-                            <input type="text" id="seudonimo-input" name="seudonimo" class="glass-input w-full px-4 py-3 rounded-xl focus:ring-2 focus:ring-purple-500 transition pr-12" placeholder="Editable">
-                            <button type="button" onclick="generatePseudonym()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-purple-400 hover:text-purple-300 transition hover:scale-110" title="Generar nuevo">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <input type="text" id="seudonimo-input" name="seudonimo" class="glass-input w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-purple-500 transition pr-10 text-sm" placeholder="Editable">
+                            <button type="button" onclick="generatePseudonym()" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-purple-400 hover:text-purple-300 transition hover:scale-110" title="Generar nuevo">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                                 </svg>
                             </button>
                         </div>
                     </div>
                 </div>
-                <div class="mb-6">
-                    <label for="mensaje-textarea" class="block text-purple-300 text-sm font-bold mb-3">Tu Propuesta / Testimonio</label>
-                    <textarea id="mensaje-textarea" name="mensaje" required class="glass-input w-full px-4 py-3 rounded-xl h-40 focus:ring-2 focus:ring-purple-500 transition resize-none" placeholder="Escribe aquí..."></textarea>
+                <div class="mb-4">
+                    <label for="mensaje-textarea" class="block text-purple-300 text-xs font-semibold mb-2">Tu Propuesta / Testimonio</label>
+                    <textarea id="mensaje-textarea" name="mensaje" required class="glass-input w-full px-3 py-2 rounded-lg h-28 focus:ring-2 focus:ring-purple-500 transition resize-none text-sm" placeholder="Escribe aquí..."></textarea>
                 </div>
-                <button type="submit" id="submit-btn" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-4 px-6 rounded-xl shadow-2xl transform transition hover:-translate-y-1 hover:shadow-purple-500/50">
+                <button type="submit" id="submit-btn" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-3 px-6 rounded-lg shadow-2xl transform transition hover:-translate-y-1 hover:shadow-purple-500/50">
                     Enviar de forma anónima
                 </button>
-                <p id="form-status" class="text-center mt-4 text-sm hidden"></p>
+                <p id="form-status" class="text-center mt-3 text-xs hidden"></p>
             </form>
         </div>
     </section>
