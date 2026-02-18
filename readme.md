@@ -153,7 +153,7 @@ Construir registros que:
 | **Colla Suyo Margot** | Investigación y Contenido |
 | **Gutierrez Chata Daniela Aracely** | diseño de infografias |
 | **Hancco Condori Lady Ruth** | Creacion de video |
-| **Huanaco Munoz Jose Gabriel** | Diseño UX/UI, Desarrollo Frontend, backend |
+| **Huanaco Muñoz Jose Gabriel** | Diseño UX/UI, Desarrollo Frontend, backend |
 | **Mamani Gutierrez Adolfo Cesar** | Documentación, difusion de contenido |
 | **Pari Molina Heyson Servet** | Genaracion de contenido, infografias |
 
